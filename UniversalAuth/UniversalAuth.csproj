@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{442A5329-8C4E-4D7B-86E7-27EE0AEB4FC3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>UniversalAuth</RootNamespace>
+    <AssemblyName>UniversalAuth</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Client\AuthClient.cs" />
+    <Compile Include="Data\ConnectionState.cs" />
+    <Compile Include="Data\ServerInfoEx.cs" />
+    <Compile Include="Encryption\BlowfishCipher.cs" />
+    <Compile Include="Encryption\Cryptengine.cs" />
+    <Compile Include="Network\Packet\IPacket.cs" />
+    <Compile Include="Network\LengthedSocket.cs" />
+    <Compile Include="Network\Opcode.cs" />
+    <Compile Include="Network\Packet\Client\AboutToPlayPacket.cs" />
+    <Compile Include="Network\Packet\Client\LoginPacket.cs" />
+    <Compile Include="Network\Packet\Client\LogoutPacket.cs" />
+    <Compile Include="Network\Packet\Client\SCCheckPacket.cs" />
+    <Compile Include="Network\Packet\Client\ServerListExtPacket.cs" />
+    <Compile Include="Network\Packet\Server\AccountKickedPacket.cs" />
+    <Compile Include="Network\Packet\Server\BlockedAccountPacket.cs" />
+    <Compile Include="Network\Packet\Server\BlockedAccountWithMsgPacket.cs" />
+    <Compile Include="Network\Packet\Server\LoginFailPacket.cs" />
+    <Compile Include="Network\Packet\Server\LoginOkPacket.cs" />
+    <Compile Include="Network\Packet\Server\PlayFailPacket.cs" />
+    <Compile Include="Network\Packet\Server\PlayOkPacket.cs" />
+    <Compile Include="Network\Packet\Server\ProtocolVersionPacket.cs" />
+    <Compile Include="Network\Packet\Server\SCCheckReqPacket.cs" />
+    <Compile Include="Network\Packet\Server\SendServerFailPacket.cs" />
+    <Compile Include="Network\Packet\Server\SendServerListExtPacket.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server\AuthServer.cs" />
+    <Compile Include="Server\Client.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
