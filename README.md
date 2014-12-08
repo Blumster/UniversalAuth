@@ -1,0 +1,4 @@
+UniversalAuth
+=============
+
+Universal Authentication Library
