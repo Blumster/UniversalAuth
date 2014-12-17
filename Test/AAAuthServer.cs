@@ -9,17 +9,17 @@ namespace Test
 {
     public class AAAuthServer : AuthServer
     {
-        public override Boolean ValidateServer(Byte serverId)
+        public override Boolean ValidateServer(Client client, Byte serverId)
         {
             return serverId == 1 || serverId == 2;
         }
 
-        public override Boolean ValidateLogin(String user, String password, UInt32 subscription, UInt16 cdkey)
+        public override Boolean ValidateLogin(Client client, String user, String password, UInt32 subscription, UInt16 cdkey)
         {
             return user == "admin" && password == "test123";
         }
 
-        public override Boolean GetServerInfos(out List<ServerInfoEx> servers)
+        public override Boolean GetServerInfos(Client client, out List<ServerInfoEx> servers)
         {
             var list = new List<ServerInfoEx>
             {

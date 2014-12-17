@@ -7,8 +7,13 @@ namespace UniversalAuth.Server
     using Data;
     using Network;
 
+    public delegate void OnEvent(Client c);
+
     public abstract class AuthServer
     {
+        public OnEvent OnConnect;
+        public OnEvent OnDisconnect;
+
         public LengthedSocket Socket { get; private set; }
         public Random Random { get; private set; }
 
@@ -54,9 +59,9 @@ namespace UniversalAuth.Server
                 Clients.Remove(client);
         }
 
-        public abstract Boolean ValidateServer(Byte serverId);
-        public abstract Boolean ValidateLogin(String user, String password, UInt32 subscription, UInt16 cdkey);
-        public abstract Boolean GetServerInfos(out List<ServerInfoEx> servers);
+        public abstract Boolean ValidateServer(Client client, Byte serverId);
+        public abstract Boolean ValidateLogin(Client client, String user, String password, UInt32 subscription, UInt16 cdkey);
+        public abstract Boolean GetServerInfos(Client client, out List<ServerInfoEx> servers);
 
         public void GenerateData(out UInt32 oneTimeKey, out UInt32 sessionId1, out UInt32 sessionId2)
         {

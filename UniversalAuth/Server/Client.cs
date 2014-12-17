@@ -103,7 +103,7 @@ namespace UniversalAuth.Server
 
             IPacket s;
 
-            if (Server.ValidateServer(packet.ServerId))
+            if (Server.ValidateServer(this, packet.ServerId))
             {
                 s = new PlayOkPacket
                 {
@@ -133,13 +133,16 @@ namespace UniversalAuth.Server
             packet.Unserialize(reader);
 
             IPacket s;
-            if (Server.ValidateLogin(packet.UserName, packet.Password, packet.Subscription, packet.CDKey))
+            if (Server.ValidateLogin(this, packet.UserName, packet.Password, packet.Subscription, packet.CDKey))
             {
                 s = new LoginOkPacket
                 {
                     SessionId1 = SessionId1,
                     SessionId2 = SessionId2
                 };
+
+                if (Server.OnConnect != null)
+                    Server.OnConnect(this);
             }
             else
             {
@@ -180,7 +183,7 @@ namespace UniversalAuth.Server
             IPacket s;
             List<ServerInfoEx> servers;
 
-            if (Server.GetServerInfos(out servers))
+            if (Server.GetServerInfos(this, out servers))
             {
                 s = new SendServerListExtPacket
                 {
@@ -206,6 +209,9 @@ namespace UniversalAuth.Server
         {
             if (_disconnect)
             {
+                if (Server.OnDisconnect != null)
+                    Server.OnDisconnect(this);
+
                 Socket.Close();
                 Socket = null;
 
