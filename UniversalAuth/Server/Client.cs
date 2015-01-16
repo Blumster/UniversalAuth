@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using UniversalAuth.Network.Packet.Server;
 
 namespace UniversalAuth.Server
 {
@@ -9,6 +8,7 @@ namespace UniversalAuth.Server
     using Network;
     using Network.Packet;
     using Network.Packet.Client;
+    using Network.Packet.Server;
 
     public class Client
     {
@@ -207,7 +207,7 @@ namespace UniversalAuth.Server
 
         private Boolean TryToDisconnect()
         {
-            if (_disconnect)
+            if (Socket != null && _disconnect)
             {
                 if (Server.OnDisconnect != null)
                     Server.OnDisconnect(this);

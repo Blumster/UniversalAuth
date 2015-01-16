@@ -36,7 +36,6 @@ namespace UniversalAuth.Network
         public void Listen(Int32 backlog)
         {
             _socket.Listen(backlog);
-            
         }
 
         public IAsyncResult BeginAccept(AsyncCallback callback)
@@ -56,7 +55,8 @@ namespace UniversalAuth.Network
 
         public void EndConnect(IAsyncResult result)
         {
-            _socket.EndConnect(result);
+            if (!_closed && result != null)
+                _socket.EndConnect(result);
         }
 
         public IAsyncResult BeginReceive(Byte[] buffer, Int32 offset, Int32 size, AsyncCallback callback)
@@ -80,7 +80,7 @@ namespace UniversalAuth.Network
             if (_closed)
                 return null;
 
-            var i = 0;
+            Int32 i;
             try
             {
                 i = _socket.EndReceive(result);
@@ -171,7 +171,7 @@ namespace UniversalAuth.Network
 
         public Int32 EndSend(IAsyncResult result)
         {
-            return _closed ? 0 : _socket.EndSend(result);
+            return _closed || result == null ? -1 : _socket.EndSend(result);
         }
 
         public void Close()
