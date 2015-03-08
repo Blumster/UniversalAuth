@@ -1,0 +1,9 @@
+/Test/bin/Debug
+/Test/bin/Release
+/Test/obj/Debug
+/Test/obj/Release
+/*.suo
+/UniversalAuth/bin/Debug
+/UniversalAuth/bin/Release
+/UniversalAuth/obj/Debug
+/UniversalAuth/obj/Release
