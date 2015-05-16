@@ -207,8 +207,11 @@ namespace UniversalAuth.Server
 
         private Boolean TryToDisconnect()
         {
-            if (Socket != null && _disconnect)
+            lock (Socket)
             {
+                if (Socket == null || !_disconnect)
+                    return _disconnect;
+
                 if (Server.OnDisconnect != null)
                     Server.OnDisconnect(this);
 
