@@ -31,7 +31,7 @@ namespace UniversalAuth.Server
                 Socket.Close();
         }
 
-        public void Start(IPAddress bindAddress, Int32 port)
+        public virtual void Start(IPAddress bindAddress, Int32 port)
         {
             Socket = new LengthedSocket(LengthedSocket.SizeType.Word);
             Socket.Bind(new IPEndPoint(bindAddress, port));
@@ -40,7 +40,7 @@ namespace UniversalAuth.Server
             Socket.BeginAccept(EndAccept);
         }
 
-        public void Stop()
+        public virtual void Stop()
         {
             Socket.Close();
             Socket = null;
@@ -53,7 +53,7 @@ namespace UniversalAuth.Server
             Socket.BeginAccept(EndAccept);
         }
 
-        public void Remove(Client client)
+        public virtual void Remove(Client client)
         {
             if (Clients.Contains(client))
                 Clients.Remove(client);
@@ -63,7 +63,7 @@ namespace UniversalAuth.Server
         public abstract Boolean ValidateLogin(Client client, String user, String password, UInt32 subscription, UInt16 cdkey);
         public abstract Boolean GetServerInfos(Client client, out List<ServerInfoEx> servers);
 
-        public void GenerateData(out UInt32 oneTimeKey, out UInt32 sessionId1, out UInt32 sessionId2)
+        public virtual void GenerateData(out UInt32 oneTimeKey, out UInt32 sessionId1, out UInt32 sessionId2)
         {
             var buff = new Byte[12];
             Random.NextBytes(buff);

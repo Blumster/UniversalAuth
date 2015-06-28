@@ -11,19 +11,20 @@ namespace UniversalAuth.Network
     {
         private readonly Socket _socket;
         private readonly SizeType _sizeHeaderLen;
+        private readonly Boolean _countSize;
         private Boolean _closed;
         private Boolean _needDecrypt;
 
-        public LengthedSocket(SizeType sizeHeaderLen)
+        public LengthedSocket(SizeType sizeHeaderLen, Boolean countSize = true)
+            : this(new Socket(SocketType.Stream, ProtocolType.Tcp), sizeHeaderLen, countSize)
         {
-            _socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-            _sizeHeaderLen = sizeHeaderLen;
         }
 
-        private LengthedSocket(Socket s, SizeType sizeHeaderLen)
+        private LengthedSocket(Socket s, SizeType sizeHeaderLen, Boolean countSize = true)
         {
             _socket = s;
             _sizeHeaderLen = sizeHeaderLen;
+            _countSize = countSize;
         }
 
         public Boolean Connected { get { return _socket.Connected; } }
@@ -45,7 +46,7 @@ namespace UniversalAuth.Network
 
         public LengthedSocket EndAccept(IAsyncResult result)
         {
-            return _closed || result == null ? null : new LengthedSocket(_socket.EndAccept(result), _sizeHeaderLen);
+            return _closed || result == null ? null : new LengthedSocket(_socket.EndAccept(result), _sizeHeaderLen, _countSize);
         }
 
         public IAsyncResult BeginConnect(EndPoint remoteEp, AsyncCallback callback, Object state)
@@ -70,9 +71,9 @@ namespace UniversalAuth.Network
             }
             catch (Exception e)
             {
-                Console.WriteLine("Unknow error at LengthedSocket::BeginReceive! Exception: {0}", e);
+                Close();
+                return null;
             }
-            return null;
         }
 
         public Byte[] EndReceive(IAsyncResult result)
@@ -120,11 +121,11 @@ namespace UniversalAuth.Network
                     break;
             }
 
-            var buff = new Byte[len - (Byte) _sizeHeaderLen];
+            var buff = new Byte[len - (Byte) (_countSize ? _sizeHeaderLen : 0)];
             if (buff.Length == 0)
                 return null;
 
-            Array.Copy(buffer, (Byte) _sizeHeaderLen, buff, 0, buff.Length);
+            Array.Copy(buffer, (Byte)(_countSize ? _sizeHeaderLen : 0), buff, 0, buff.Length);
 
             if (_needDecrypt)
                 CryptEngine.Decrypt(buff);
@@ -147,26 +148,34 @@ namespace UniversalAuth.Network
                     break;
 
                 case SizeType.Char:
-                    buff.Add((Byte) (buffer.Length + 1));
+                    buff.Add((Byte) (buffer.Length + (_countSize ? 1 : 0)));
                     break;
 
                 case SizeType.Word:
-                    buff.AddRange(BitConverter.GetBytes((UInt16) (buffer.Length + 2U)));
+                    buff.AddRange(BitConverter.GetBytes((UInt16) (buffer.Length + (_countSize ? 2U : 0U))));
                     break;
 
                 case SizeType.Dword:
-                    buff.AddRange(BitConverter.GetBytes((UInt32) (buffer.Length + 4U)));
+                    buff.AddRange(BitConverter.GetBytes((UInt32) (buffer.Length + (_countSize ? 4U : 0U))));
                     break;
 
                 case SizeType.Qword:
-                    buff.AddRange(BitConverter.GetBytes((UInt64) (buffer.Length + 8U)));
+                    buff.AddRange(BitConverter.GetBytes((UInt64) (buffer.Length + (_countSize ? 8U : 0U))));
                     break;
             }
 
 
             buff.AddRange(buffer);
 
-            return _socket.BeginSend(buff.ToArray(), 0, buff.Count, SocketFlags.None, callback, null);
+            try
+            {
+                return _socket.BeginSend(buff.ToArray(), 0, buff.Count, SocketFlags.None, callback, null);
+            }
+            catch
+            {
+                Close();
+                return null;
+            }
         }
 
         public Int32 EndSend(IAsyncResult result)
